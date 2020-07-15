@@ -5,16 +5,10 @@ namespace MonopolyApp
 {
     class User
     {
-     
-     
-     
-     
         User(string name)
         {
             this.name = name;
             balance = 15;
-            // if (UserCreatedEvent != null)
-            // UserCreatedEvent(this, new TypeEventArgs(new ActionJsonObject()));
         }
         public override string ToString()
         {
@@ -28,8 +22,6 @@ namespace MonopolyApp
             {
                 howMany = Math.Round(howMany, 2);
                 balance -= howMany;
-             //   if (PaidFromTheBalanceEvent != null)
-             //   PaidFromTheBalanceEvent(this, new TypeEventArgs("a"));
             }
             else
                 throw new ArgumentException($"{name} doesn't have enough money. Balance cannot be negative.");
@@ -39,9 +31,7 @@ namespace MonopolyApp
             try
             {
                 PayFromTheBalance(howMany);
-             //   if (PaidToOtherPlayerEvent != null)
-              //  PaidToOtherPlayerEvent(this, new TypeEventArgs("a"));
-              //  otherPlayer.AddMoney(howMany);
+                otherPlayer.AddMoney(howMany);
             }
             catch (ArgumentException)
             {
@@ -51,8 +41,6 @@ namespace MonopolyApp
         public void PassedStart()
         {
             AddMoney(2);
-          // if (PassedStartEvent != null)
-          // PassedStartEvent(this, new TypeEventArgs("a"));
         }
         public void AddMoney(double howMany)
         {
@@ -60,9 +48,6 @@ namespace MonopolyApp
                 throw new ArgumentException($"You cannot get the negative value. :/");
             balance += howMany;
             Math.Round(balance, 2);
-        //    if (AddedMoneyEvent != null)
-          // AddedMoneyEvent(this, new TypeEventArgs("a"));
-          // // Console.WriteLine($"\t{GetName()} + {howMany}MLN.");
         }
         public static User GetUser(List<User> listOfUsers, string username)
         {

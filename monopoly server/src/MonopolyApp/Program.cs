@@ -17,7 +17,7 @@ namespace MonopolyApp
             TcpListener serverSocket = new TcpListener(serverAdress, PORT);
             serverSocket.Start();
             Console.WriteLine(">> SERVER IS RUNNING.");
-            
+
 
             Byte[] bytes = new Byte[256];
             string data = null;
@@ -47,7 +47,7 @@ namespace MonopolyApp
                 {
                     try
                     {
-                    operation = JsonSerializer.Deserialize<ActionJsonObject>(data);
+                        operation = JsonSerializer.Deserialize<ActionJsonObject>(data);
                     }
                     catch (JsonException e)
                     {
@@ -59,21 +59,17 @@ namespace MonopolyApp
                     Console.WriteLine("===============");
                     try
                     {
-                    Cases.Action(operation, ref listOfUsers, ref allowMorePlayers);
+                        Cases.Action(operation, ref listOfUsers, ref allowMorePlayers);
                     }
                     catch (Exception e)
                     {
                         Console.WriteLine(e.Message);
                     }
                     Console.WriteLine("===============");
-                    
+
                 }
             }
 
         }
-        // static void writel(object a, TypeEventArgs args)
-        // {
-            // Console.WriteLine(a);
-        // }
     }
 }
