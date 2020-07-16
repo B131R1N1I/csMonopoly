@@ -37,7 +37,7 @@ namespace MonopolyApp
                                 UserCreatedEvent(new TypeEventArgs(operation));
                         }
                         else
-                            throw new ArgumentException($"{operation.from} cannot join");
+                            throw new ArgumentException($"{from} cannot join");
                         break;
                     case "dontAllowMorePlayers":
                         if (allowMorePlayers)
@@ -46,10 +46,6 @@ namespace MonopolyApp
                             if (listOfUsers.Count > 1)
                             {
                                 allowMorePlayers = !allowMorePlayers;
-                                // TEMPORARY!
-                                Console.WriteLine($"Now no one can join to this game. {operation.from} has blocked it. " +
-                                "If you want more players to join - restart the system.");
-
                                 if (NoMorePlayersAllowedEvent != null)
                                     NoMorePlayersAllowedEvent(new TypeEventArgs(operation));
                             }
@@ -64,8 +60,6 @@ namespace MonopolyApp
                             user1 = User.GetUser(listOfUsers, from);
                             user2 = User.GetUser(listOfUsers, to);
                             user1.PayToOtherPlayer(user2, howMany);
-                            // TEMPORARY!
-                            Console.WriteLine($"{from} successfully paid {howMany}MLN to {user2.name}.");
 
                             if (PaidToOtherPlayerEvent != null)
                                 PaidToOtherPlayerEvent(new TypeEventArgs(operation));
@@ -103,11 +97,6 @@ namespace MonopolyApp
 
                         break;
                     case "userStats":
-                        // get user then WriteLine TEMPORARY!
-                        user1 = User.GetUser(listOfUsers, from);
-                        // TEMPORARY!
-                        Console.WriteLine(user1);
-                        
                         // raise GotUserStatsEvent if not null
                         if (GotUserStatsEvent != null)
                         GotUserStatsEvent(new TypeEventArgs(operation));
@@ -117,10 +106,7 @@ namespace MonopolyApp
                         // get user then add him some money
                         user1 = User.GetUser(listOfUsers, to);
                         user1.PassedStart();
-
-                        // TEMPORARY!
-                        Console.WriteLine($"{user1.name} just passed the start and earn 2 MLN. Now {user1.name}'s balance is {user1.balance}MLN.");
-
+            
                         if (PassedStartEvent != null)
                             PassedStartEvent(new TypeEventArgs(operation));
 
@@ -137,9 +123,6 @@ namespace MonopolyApp
 
                         break;
                     default:
-                        // TEMPORARY!
-                        Console.WriteLine("I don't recognize this command");
-
                         if (NotRecognisedCommandEvent != null)
                         NotRecognisedCommandEvent(new TypeEventArgs(operation));
 

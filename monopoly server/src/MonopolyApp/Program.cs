@@ -7,8 +7,9 @@ namespace MonopolyApp
 {
     class Program
     {
-        static void Main()
+        public static void Main()
         {
+            Cases.AddedMoneyEvent += ConsoleLogs.ConsoleLogOnEvent;
             bool allowMorePlayers = true;
             ActionJsonObject operation = new ActionJsonObject();
             List<User> listOfUsers = new List<User>();
