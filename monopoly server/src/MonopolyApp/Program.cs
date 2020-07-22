@@ -44,7 +44,7 @@ namespace MonopolyApp
                     data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
 
                     byte[] msg = System.Text.Encoding.ASCII.GetBytes(data);
-                    i++;
+
                 }
 
                 if (data != null)
