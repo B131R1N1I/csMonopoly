@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Net;
 using System.Text.Json;
+
 namespace MonopolyApp
 {
     class Program
     {
-        public static void Main()
+        static void Main()
         {
-            Cases.AddedMoneyEvent += ConsoleLogs.ConsoleLogOnEvent;
+            AddEvents.AddConsoleEvents();
+            
             bool allowMorePlayers = true;
             ActionJsonObject operation = new ActionJsonObject();
             List<User> listOfUsers = new List<User>();
             int PORT = 6666;
-            IPAddress serverAdress = IPAddress.Any;
-            TcpListener serverSocket = new TcpListener(serverAdress, PORT);
+            IPAddress serverAddress = IPAddress.Any;
+            TcpListener serverSocket = new TcpListener(serverAddress, PORT);
             serverSocket.Start();
             Console.WriteLine(">> SERVER IS RUNNING.");
 
@@ -33,17 +35,18 @@ namespace MonopolyApp
                 data = null;
 
                 NetworkStream stream = client.GetStream();
-
                 int i;
 
+                
                 while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
                 {
 
                     data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
 
                     byte[] msg = System.Text.Encoding.ASCII.GetBytes(data);
-
+                    i++;
                 }
+
                 if (data != null)
                 {
                     try
@@ -62,10 +65,7 @@ namespace MonopolyApp
                     {
                         Cases.Action(operation, ref listOfUsers, ref allowMorePlayers);
                     }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
+                    catch (Exception){}
                     Console.WriteLine("===============");
 
                 }

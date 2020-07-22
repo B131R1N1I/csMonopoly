@@ -51,25 +51,20 @@ namespace MonopolyApp
         }
         public static User GetUser(List<User> listOfUsers, string username)
         {
-            foreach (User i in listOfUsers)
+
+            foreach (User user in listOfUsers)
             {
-                if (i.name.ToLower() == username.ToLower())
-                    return i;
+                if (user.name.ToLower() == username.ToLower())
+                    return user;
             }
             throw new ArgumentException($"There is no user {username}.");
         }
         public static User CreateNewUser(List<User> listOfUsers, string username)
         {
-            bool exists = false;
-            foreach (User i in listOfUsers)
-            {
-                if (i.name.ToLower() == username.ToLower())
-                    exists = true;
-            }
-            if (!exists)
-                return new User(username);
-            else
+            if (listOfUsers.Find(user => user.name.ToLower() == username.ToLower()) != null)
                 throw new ArgumentException($"Name {username} is already used.");
+
+            return new User(username);
         }
         public readonly string name;
         public double balance
