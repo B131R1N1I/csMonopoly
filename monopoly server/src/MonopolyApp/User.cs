@@ -9,6 +9,7 @@ namespace MonopolyApp
         {
             this.name = name;
             balance = 15;
+            id = idcreator++;
         }
         public override string ToString()
         {
@@ -72,5 +73,7 @@ namespace MonopolyApp
             get;
             private set;
         }
+        public readonly int id;
+        static private int idcreator = 0;
     }
 }

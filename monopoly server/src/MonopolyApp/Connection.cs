@@ -10,7 +10,7 @@ namespace MonopolyApp
     {
         public static void DataReader(ref Queue<ActionJsonObject> json, TcpListener serverSocket)
         {
-            System.Console.WriteLine("th");
+            System.Console.WriteLine("Ready to start Listening");
             Byte[] bytes = new byte[256];
             int i;
             string data;
@@ -19,7 +19,9 @@ namespace MonopolyApp
             while (true)
             {
                 if (serverSocket.Pending())
+                {
                     listOfStreams.AddLast(serverSocket.AcceptTcpClient().GetStream());
+                }   
                 foreach (NetworkStream stream in listOfStreams)
                 {
                     if (stream.DataAvailable)
@@ -36,7 +38,7 @@ namespace MonopolyApp
                             System.Console.WriteLine(e.Message);
                         }
                     }
-                }
+                } 
 
             }
         }

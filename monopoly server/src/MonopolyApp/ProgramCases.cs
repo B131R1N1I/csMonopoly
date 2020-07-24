@@ -16,8 +16,9 @@ namespace MonopolyApp
         static public event WriteMessage GotUserStatsEvent;
         static public event WriteLog NotRecognisedCommandEvent;
         static public event WriteErrorMessage ExceptionEvent;
-        public static void Action(ActionJsonObject operation, ref List<User> listOfUsers, ref bool allowMorePlayers)
+        public static void Action(ActionJsonObject operation, ref List<User> listOfUsers)
         {
+            bool allowMorePlayers = true;
             double howMany = Math.Round(operation.howMany, 2);
             string toDo = operation.type;
             string from = operation.from;
@@ -48,7 +49,7 @@ namespace MonopolyApp
                         if (allowMorePlayers)
                         {
                             // You can turn off joining 2 or more players joined
-                            if (listOfUsers.Count > 1)
+                            if (listOfUsers.Count >= 2)
                             {
                                 allowMorePlayers = !allowMorePlayers;
                                 if (NoMorePlayersAllowedEvent != null)
@@ -62,6 +63,8 @@ namespace MonopolyApp
 
                     // payment operation (to player)
                     case "payTo":
+                        if (allowMorePlayers)
+                            throw new Exception("allowMorePlayers is not false.");
                         try
                         {
                             // get two users then transfer money
@@ -82,6 +85,8 @@ namespace MonopolyApp
 
                     // payment operation
                     case "pay":
+                        if (allowMorePlayers)
+                            throw new Exception("allowMorePlayers is not false.");
                         try
                         {
                             // get user then remove some money
@@ -101,6 +106,8 @@ namespace MonopolyApp
 
                     // add money to player
                     case "addMoney":
+                        if (allowMorePlayers)
+                            throw new Exception("allowMorePlayers is not false.");
                         // add money to player
                         user1 = User.GetUser(listOfUsers, to);
                         user1.AddMoney(howMany);
@@ -113,6 +120,7 @@ namespace MonopolyApp
 
                     // show user's stats
                     case "userStats":
+
                         if (GotUserStatsEvent != null)
                             GotUserStatsEvent(new User[] { User.GetUser(listOfUsers, from) });
                         break;
@@ -120,6 +128,8 @@ namespace MonopolyApp
 
                     // add 2mln for start
                     case "start":
+                        if (allowMorePlayers)
+                            throw new Exception("allowMorePlayers is not false.");
                         // get user then add him some money
                         user1 = User.GetUser(listOfUsers, to);
                         user1.PassedStart();

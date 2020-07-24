@@ -22,7 +22,7 @@ namespace MonopolyClientConsole
             while (true)
             {
                 Console.Write("type: ");
-                type = Console.ReadLine();
+                type = Console.ReadLine().Replace(" ", "");
                 Console.Write("from: ");
                 from = Console.ReadLine();
                 Console.Write("to: ");

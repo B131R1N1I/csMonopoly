@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Net.Sockets;
 using System.Net;
 
+
 namespace MonopolyClientConsole
 {
     class Connection
@@ -19,10 +20,18 @@ namespace MonopolyClientConsole
             toSend = System.Text.Encoding.ASCII.GetBytes(jsonString);
 
             Console.WriteLine(jsonString);
-            
+
             NetworkStream stream = clientSocket.GetStream();
-            stream.Write(toSend, 0, toSend.Length);
-            System.Console.WriteLine("SEND");
+            try
+            {
+                stream.Write(toSend, 0, toSend.Length);
+                System.Console.WriteLine("SEND");
+            }
+            catch (System.IO.IOException ex)
+            {
+               System.Console.WriteLine(ex.Message);
+            }
+
 
         }
         TcpClient clientSocket = new TcpClient();
