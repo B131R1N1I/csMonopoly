@@ -15,19 +15,19 @@ namespace MonopolyApp
         {
             return name + ": " + balance.ToString() + "MLN";
         }
-        public void PayFromTheBalance(double howMany)
+        public void PayFromTheBalance(float howMany)
         {
             if (howMany < 0)
                 throw new ArgumentException($"You cannot pay the negative value. :/");
             if (howMany <= balance)
             {
-                howMany = Math.Round(howMany, 2);
+                howMany = (float)Math.Round((double)howMany, 2);
                 balance -= howMany;
             }
             else
                 throw new ArgumentException($"{name} doesn't have enough money. Balance cannot be negative.");
         }
-        public void PayToOtherPlayer(User otherPlayer, double howMany)
+        public void PayToOtherPlayer(User otherPlayer, float howMany)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace MonopolyApp
         {
             AddMoney(2);
         }
-        public void AddMoney(double howMany)
+        public void AddMoney(float howMany)
         {
             if (howMany < 0)
                 throw new ArgumentException($"You cannot get the negative value. :/");
@@ -68,7 +68,7 @@ namespace MonopolyApp
             return new User(username);
         }
         public readonly string name;
-        public double balance
+        public float balance
         {
             get;
             private set;

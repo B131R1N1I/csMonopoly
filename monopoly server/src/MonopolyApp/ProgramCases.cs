@@ -16,10 +16,9 @@ namespace MonopolyApp
         static public event WriteMessage GotUserStatsEvent;
         static public event WriteLog NotRecognisedCommandEvent;
         static public event WriteErrorMessage ExceptionEvent;
-        public static void Action(ActionJsonObject operation, ref List<User> listOfUsers)
+        public static void Action(ActionJsonObject operation, ref List<User> listOfUsers, ref bool allowMorePlayers)
         {
-            bool allowMorePlayers = true;
-            double howMany = Math.Round(operation.howMany, 2);
+            float howMany = (float)Math.Round(operation.howMany, 2);
             string toDo = operation.type;
             string from = operation.from;
             string to = operation.to;
@@ -51,7 +50,7 @@ namespace MonopolyApp
                             // You can turn off joining 2 or more players joined
                             if (listOfUsers.Count >= 2)
                             {
-                                allowMorePlayers = !allowMorePlayers;
+                                allowMorePlayers = false;
                                 if (NoMorePlayersAllowedEvent != null)
                                     NoMorePlayersAllowedEvent(new TypeEventArgs(operation));
                             }
@@ -156,11 +155,11 @@ namespace MonopolyApp
                         break;
                 }
             }
-            catch (ArgumentException ex)
+            catch (Exception ex)
             {
                 if (ExceptionEvent != null)
                     ExceptionEvent(ex);
-                throw;
+            throw;
             }
         }
     }

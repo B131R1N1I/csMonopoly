@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Net;
-using System.Text.Json;
 using System.Threading;
 
 namespace MonopolyApp
@@ -12,29 +11,25 @@ namespace MonopolyApp
         static void Main()
         {
             AddEvents.AddConsoleEvents();
-            
-            ActionJsonObject operation = new ActionJsonObject();
+            bool allowMorePlayers = true;
+            ActionJsonObject operation;
             Queue<ActionJsonObject> json = new Queue<ActionJsonObject>();
 
             List<User> listOfUsers = new List<User>();
-            int PORT = 6666;
-            IPAddress serverAddress = IPAddress.Any;
-            TcpListener serverSocket = new TcpListener(serverAddress, PORT);
-            serverSocket.Start();
             Console.WriteLine(">> SERVER IS RUNNING.");
 
-            Thread DataReader = new Thread(() => Connection.DataReader(ref json, serverSocket));
+            Thread DataReader = new Thread(() => Connection.DataReader(ref json));
+            DataReader.Name = "DataReader";
             DataReader.Start();        
             while (true)
             {
                 if (json.Count > 0)
                 {
                     operation = json.Dequeue();
-                    Console.WriteLine("----------");
                     Console.WriteLine("===============");
                     try
                     {
-                        Cases.Action(operation, ref listOfUsers);
+                        Cases.Action(operation, ref listOfUsers, ref allowMorePlayers);
                     }
                     catch (Exception){}
                     Console.WriteLine("===============");
@@ -42,7 +37,7 @@ namespace MonopolyApp
                 }
 
             }
-
+ 
         }
     }
 }

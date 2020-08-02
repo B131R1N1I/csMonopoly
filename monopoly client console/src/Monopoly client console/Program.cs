@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Net;
 using System.Text.Json;
 using System.Text;
+using System.Threading;
 
 namespace MonopolyClientConsole
 {
@@ -11,13 +12,15 @@ namespace MonopolyClientConsole
     {
         static void Main()
         {
-
+            Queue<ActionJsonObject> json = new Queue<ActionJsonObject>();
             IPAddress serverAddress = IPAddress.Loopback;
-            Connection ServerConnection = new Connection(serverAddress);
+            Connection serverConnection = new Connection(serverAddress);
+            Thread dataReader = new Thread(() => serverConnection.DataReader(ref json));
+            dataReader.Start();
 
 
             string type, from, to, howManytemp;
-            double howMany;
+            float howMany;
 
             while (true)
             {
@@ -32,16 +35,16 @@ namespace MonopolyClientConsole
                 {
                     Console.Write("howMany: ");
                     howManytemp = Console.ReadLine();
-                    if (Double.TryParse(howManytemp, out howMany))
+                    if (float.TryParse(howManytemp, out howMany))
                     {
-                        howMany = Double.Parse(howManytemp);
+                        howMany = float.Parse(howManytemp);
                         break;
                     }
                     else if (howManytemp == "")
-                    break;
+                        break;
                 }
-                ActionJsonObject json = new ActionJsonObject() { type = type, from = from, to = to, howMany = howMany };
-                ServerConnection.JsonSender(json);
+                ActionJsonObject operation = new ActionJsonObject() { type = type, from = from, to = to, howMany = howMany };
+                serverConnection.JsonSender(operation);
             }
         }
     }

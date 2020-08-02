@@ -11,6 +11,6 @@ namespace MonopolyApp
     public string type {get; set;}
     public string from {get; set;}
     public string to {get; set;}
-    public double howMany {get; set;}
+    public float howMany {get; set;}
     }
 }
