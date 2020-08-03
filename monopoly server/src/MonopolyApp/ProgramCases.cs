@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 
 namespace MonopolyApp
 {
@@ -16,8 +17,10 @@ namespace MonopolyApp
         static public event WriteMessage GotUserStatsEvent;
         static public event WriteLog NotRecognisedCommandEvent;
         static public event WriteErrorMessage ExceptionEvent;
-        public static void Action(ActionJsonObject operation, ref List<User> listOfUsers, ref bool allowMorePlayers)
+        public static void Action(StreamWithAction streamWithAction, ref List<User> listOfUsers, ref bool allowMorePlayers)
         {
+            ActionJsonObject operation = streamWithAction.jsonObject;
+            NetworkStream sender = streamWithAction.stream;
             float howMany = (float)Math.Round(operation.howMany, 2);
             string toDo = operation.type;
             string from = operation.from;
@@ -158,7 +161,7 @@ namespace MonopolyApp
             catch (Exception ex)
             {
                 if (ExceptionEvent != null)
-                    ExceptionEvent(ex);
+                    ExceptionEvent(sender, ex);
             throw;
             }
         }

@@ -9,39 +9,65 @@ namespace MonopolyApp
 {
     class Connection
     {
-        public static void DataReader(ref Queue<ActionJsonObject> json)
+        static public event WriteErrorMessage CannotDeserializeDataEvent;
+        public static void DataReader(ref Queue<StreamWithAction> json)
         {
             TcpListener serverSocket = new TcpListener(IPAddress.Any, 6666);
             serverSocket.Start();
             System.Console.WriteLine("Ready to start Listening");
             Byte[] bytes = new byte[256];
             string data;
+            NetworkStream stream;
 
-            
+
             while (true)
             {
                 if (serverSocket.Pending())
                 {
-                    listOfStreams.AddLast(serverSocket.AcceptTcpClient().GetStream());
-                }   
-                foreach (NetworkStream stream in listOfStreams)
+                    listOfStreams.Add(serverSocket.AcceptTcpClient().GetStream());
+                }
+                // foreach (NetworkStream stream in listOfStreams)
+                // {
+
+                //     if (stream.DataAvailable)
+                //     {
+                //         System.Console.WriteLine(stream.DataAvailable);
+                //         data = System.Text.Encoding.ASCII.GetString(bytes, 0, stream.Read(bytes));
+                //         System.Console.WriteLine(data);
+                //         try
+                //         {
+                //             json.Enqueue(JsonSerializer.Deserialize<ActionJsonObject>(data));
+                //         }
+                //         catch (JsonException e)
+                //         {
+                //             System.Console.WriteLine(e.Message);
+                //         }
+                //     }
+                // }
+                if (listOfStreams.Find(s => s.DataAvailable == true) != null)
                 {
-                    
-                    if (stream.DataAvailable)
+                    stream = listOfStreams.Find(s => s.DataAvailable == true);
+                    data = System.Text.Encoding.ASCII.GetString(bytes, 0, stream.Read(bytes));
+                    System.Console.WriteLine(data);
+                    try
                     {
-                        System.Console.WriteLine(stream.DataAvailable);
-                        data = System.Text.Encoding.ASCII.GetString(bytes, 0, stream.Read(bytes));
-                        System.Console.WriteLine(data);
-                        try
-                        {
-                            json.Enqueue(JsonSerializer.Deserialize<ActionJsonObject>(data));
-                        }
-                        catch (JsonException e)
-                        {
-                            System.Console.WriteLine(e.Message);
-                        }
+                        json.Enqueue(new StreamWithAction(JsonSerializer.Deserialize<ActionJsonObject>(data), stream));
                     }
-                } 
+                    catch (JsonException e)
+                    {
+                        if (CannotDeserializeDataEvent != null)
+                            CannotDeserializeDataEvent(stream, e);
+                    }                
+                }
+                //         try
+                //         {
+                //             json.Enqueue(JsonSerializer.Deserialize<ActionJsonObject>(data));
+                //         }
+                //         catch (JsonException e)
+                //         {
+                //             System.Console.WriteLine(e.Message);
+                //         }
+
                 // using (TcpClient connectedTcpClient = serverSocket.AcceptTcpClient())
                 // {
                 //     using (NetworkStream stream = connectedTcpClient.GetStream())
@@ -51,6 +77,16 @@ namespace MonopolyApp
                 //     }
                 // }
             }
+        }
+        public static void DataSender(NetworkStream stream, ActionJsonObject json)
+        {
+            Byte[] bytes = new byte[256];
+            bytes = System.Text.Encoding.ASCII.GetBytes(JsonSerializer.Serialize<ActionJsonObject>(json));
+
+            stream.Write(bytes, 0, bytes.Length);
+
+            System.Console.WriteLine($"Send {bytes.Length}");
+
         }
         public static void DataSender(ActionJsonObject json)
         {
@@ -63,7 +99,7 @@ namespace MonopolyApp
                 System.Console.WriteLine($"Send {bytes.Length}");
             }
         }
-        static LinkedList<NetworkStream> listOfStreams = new LinkedList<NetworkStream>();
-        
+        static List<NetworkStream> listOfStreams = new List<NetworkStream>();
+
     }
 }

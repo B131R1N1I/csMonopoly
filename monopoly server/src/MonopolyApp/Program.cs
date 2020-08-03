@@ -12,8 +12,8 @@ namespace MonopolyApp
         {
             AddEvents.AddConsoleEvents();
             bool allowMorePlayers = true;
-            ActionJsonObject operation;
-            Queue<ActionJsonObject> json = new Queue<ActionJsonObject>();
+            StreamWithAction operation;
+            Queue<StreamWithAction> json = new Queue<StreamWithAction>();
 
             List<User> listOfUsers = new List<User>();
             Console.WriteLine(">> SERVER IS RUNNING.");

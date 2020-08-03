@@ -5,11 +5,11 @@ namespace MonopolyApp
 {
     class MessageSender
     {
-        public static void SendErrorMessage(Exception ex)
+        public static void SendErrorMessage(NetworkStream stream, Exception ex)
         {
-            System.Console.WriteLine("error!");
+            System.Console.WriteLine("error! " + ex.Message);
             ActionJsonObject a = new ActionJsonObject() {type = "Error", from = "wyskoczył"};
-            Connection.DataSender(a);
+            Connection.DataSender(stream, a);
         }
     }
 }

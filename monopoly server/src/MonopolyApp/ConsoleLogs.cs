@@ -1,4 +1,5 @@
 using System;
+using System.Net.Sockets;
 
 namespace MonopolyApp
 {
@@ -44,7 +45,7 @@ namespace MonopolyApp
                 Console.WriteLine(user);
         }
 
-        public static void ConsoleLogOnEvent(Exception args)
+        public static void ConsoleLogOnEvent(NetworkStream x, Exception args)
         {
             Console.WriteLine(args.Message);
         }
