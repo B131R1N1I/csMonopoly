@@ -82,7 +82,6 @@ namespace MonopolyClientConsole
                         catch (JsonException e)
                         {
                             Console.WriteLine(e.Message);
-
                         }
                     }
                 }

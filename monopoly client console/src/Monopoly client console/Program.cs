@@ -5,6 +5,7 @@ using System.Net;
 using System.Text.Json;
 using System.Text;
 using System.Threading;
+using System.Timers;
 
 namespace MonopolyClientConsole
 {
@@ -45,6 +46,11 @@ namespace MonopolyClientConsole
                 }
                 ActionJsonObject operation = new ActionJsonObject() { type = type, from = from, to = to, howMany = howMany };
                 serverConnection.JsonSender(operation);
+                // temporary
+                Thread.Sleep(1000);
+                if (json.Count > 0)
+                    Console.WriteLine(json.Dequeue().from);
+
             }
         }
     }

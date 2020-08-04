@@ -8,7 +8,7 @@ namespace MonopolyApp
         public static void SendErrorMessage(NetworkStream stream, Exception ex)
         {
             System.Console.WriteLine("error! " + ex.Message);
-            ActionJsonObject a = new ActionJsonObject() {type = "Error", from = "wyskoczył"};
+            ActionJsonObject a = new ActionJsonObject() {type = "Error", from = ex.Message};
             Connection.DataSender(stream, a);
         }
     }
