@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace MonopolyApp
 {
-    class Cases
+    partial class Cases
     {
         // Events on operations
         static public event WriteLog UserCreatedEvent;
@@ -39,7 +39,7 @@ namespace MonopolyApp
 
                             listOfUsers.Add(User.CreateNewUser(listOfUsers, from));
                             if (UserCreatedEvent != null)
-                                UserCreatedEvent(new TypeEventArgs(operation));
+                                UserCreatedEvent(new TypeEventArgs(operation, sender));
                         }
                         else
                             throw new ArgumentException($"{from} cannot join");
@@ -55,7 +55,7 @@ namespace MonopolyApp
                             {
                                 allowMorePlayers = false;
                                 if (NoMorePlayersAllowedEvent != null)
-                                    NoMorePlayersAllowedEvent(new TypeEventArgs(operation));
+                                    NoMorePlayersAllowedEvent(new TypeEventArgs(operation, sender));
                             }
                             else
                                 throw new Exception("You need at least 2 players to start game");
@@ -75,7 +75,7 @@ namespace MonopolyApp
                             user1.PayToOtherPlayer(user2, howMany);
 
                             if (PaidToOtherPlayerEvent != null)
-                                PaidToOtherPlayerEvent(new TypeEventArgs(operation));
+                                PaidToOtherPlayerEvent(new TypeEventArgs(operation, sender));
 
                         }
                         catch (ArgumentException)
@@ -96,7 +96,7 @@ namespace MonopolyApp
                             user1.PayFromTheBalance(howMany);
 
                             if (PaidFromTheBalanceEvent != null)
-                                PaidFromTheBalanceEvent(new TypeEventArgs(operation));
+                                PaidFromTheBalanceEvent(new TypeEventArgs(operation, sender));
 
                         }
                         catch (ArgumentException)
@@ -115,7 +115,7 @@ namespace MonopolyApp
                         user1.AddMoney(howMany);
 
                         if (AddedMoneyEvent != null)
-                            AddedMoneyEvent(new TypeEventArgs(operation));
+                            AddedMoneyEvent(new TypeEventArgs(operation, sender));
 
                         break;
 
@@ -137,7 +137,7 @@ namespace MonopolyApp
                         user1.PassedStart();
 
                         if (PassedStartEvent != null)
-                            PassedStartEvent(new TypeEventArgs(operation));
+                            PassedStartEvent(new TypeEventArgs(operation, sender));
 
                         break;
 
@@ -153,7 +153,7 @@ namespace MonopolyApp
 
                     default:
                         if (NotRecognisedCommandEvent != null)
-                            NotRecognisedCommandEvent(new TypeEventArgs(operation));
+                            NotRecognisedCommandEvent(new TypeEventArgs(operation, sender));
 
                         break;
                 }

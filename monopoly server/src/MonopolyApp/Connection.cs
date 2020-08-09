@@ -88,17 +88,17 @@ namespace MonopolyApp
             System.Console.WriteLine($"Send {bytes.Length}");
 
         }
-        public static void DataSender(ActionJsonObject json)
-        {
-            Byte[] bytes = new byte[256];
-            bytes = System.Text.Encoding.ASCII.GetBytes(JsonSerializer.Serialize<ActionJsonObject>(json));
-            foreach (NetworkStream stream in listOfStreams)
-            {
-                System.Console.WriteLine("ERRRRR");
-                stream.Write(bytes, 0, bytes.Length);
-                System.Console.WriteLine($"Send {bytes.Length}");
-            }
-        }
+        // public static void DataSender(ActionJsonObject json)
+        // {
+        //     Byte[] bytes = new byte[256];
+        //     bytes = System.Text.Encoding.ASCII.GetBytes(JsonSerializer.Serialize<ActionJsonObject>(json));
+        //     foreach (NetworkStream stream in listOfStreams)
+        //     {
+        //         System.Console.WriteLine("ERRRRR");
+        //         stream.Write(bytes, 0, bytes.Length);
+        //         System.Console.WriteLine($"Send {bytes.Length}");
+        //     }
+        // }
         static List<NetworkStream> listOfStreams = new List<NetworkStream>();
 
     }

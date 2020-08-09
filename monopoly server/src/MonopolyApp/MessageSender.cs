@@ -11,5 +11,11 @@ namespace MonopolyApp
             ActionJsonObject a = new ActionJsonObject() {type = "Error", from = ex.Message};
             Connection.DataSender(stream, a);
         }
+        public static void SendMessage(TypeEventArgs streamWithAction)
+        {
+            System.Console.WriteLine("Success message: " + Cases.ActionMessage(streamWithAction.actionJson));
+            ActionJsonObject a = new ActionJsonObject() {type = "Message", from = Cases.ActionMessage(streamWithAction.actionJson)};
+            Connection.DataSender(streamWithAction.stream, a);
+        }
     }
 }

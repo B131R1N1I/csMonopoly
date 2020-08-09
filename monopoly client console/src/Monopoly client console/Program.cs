@@ -44,12 +44,15 @@ namespace MonopolyClientConsole
                     else if (howManytemp == "")
                         break;
                 }
-                ActionJsonObject operation = new ActionJsonObject() { type = type, from = from, to = to, howMany = howMany };
-                serverConnection.JsonSender(operation);
+                json.Enqueue(new ActionJsonObject() { type = type, from = from, to = to, howMany = howMany });
+                
                 // temporary
                 Thread.Sleep(1000);
                 if (json.Count > 0)
-                    Console.WriteLine(json.Dequeue().from);
+                    // error message
+                    Console.WriteLine(json.Peek().from);
+                    serverConnection.JsonSender(json.Dequeue());
+                    
 
             }
         }

@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Net.Sockets;
 using System.Net;
 using System.Collections.Generic;
+using System.Threading;
 
 
 namespace MonopolyClientConsole
@@ -12,7 +13,7 @@ namespace MonopolyClientConsole
         public Connection(IPAddress serverAddress)
         {
             this.serverAddress = serverAddress;
-            clientSocket.Connect(serverAddress, PORT);
+            clientSocket = ConnectToServer();
         }
         public void JsonSender(ActionJsonObject json)
         {
@@ -20,36 +21,36 @@ namespace MonopolyClientConsole
             string jsonString = JsonSerializer.Serialize(json);
             toSend = System.Text.Encoding.ASCII.GetBytes(jsonString);
 
+
             Console.WriteLine(jsonString);
 
             NetworkStream stream = clientSocket.GetStream();
             try
             {
-                if (!stream.CanWrite)
-                    throw new System.IO.IOException("CAnt read");
-                stream.Write(toSend, 0, toSend.Length);
-                System.Console.WriteLine("SEND");
+                if (clientSocket.Client.Connected)
+                {
+                    if (!stream.CanWrite)
+                        throw new System.IO.IOException("CAnt write");
+                    stream.Write(toSend, 0, toSend.Length);
+                    System.Console.WriteLine("SEND");
+                }
+                else
+                    throw new Exception();
             }
             catch (System.IO.IOException ex)
             {
                 System.Console.WriteLine(ex.Message);
 
-                clientSocket.Close();
-                clientSocket = new TcpClient();
-                clientSocket.Connect(serverAddress, PORT);
                 try
                 {
                     JsonSender(json);
-                    System.Console.WriteLine("Connection fixed.");
                 }
                 catch (Exception e)
                 {
-
                     System.Console.WriteLine(e.Message);
+                    clientSocket = ConnectToServer();
                     System.Console.WriteLine("Cannot send message. Maybe sever is down.");
                 }
-
-
 
             }
 
@@ -64,9 +65,10 @@ namespace MonopolyClientConsole
             {
                 try
                 {
-                    if (stream.DataAvailable)
+                    
+                    if (clientSocket.Connected & stream.DataAvailable)
                     {
-                        System.Console.WriteLine("a");
+                        System.Console.WriteLine("stream.DataAvailable == true");
 
 
                         jsonString = System.Text.Encoding.ASCII.GetString(bytes, 0, stream.Read(bytes));
@@ -92,6 +94,23 @@ namespace MonopolyClientConsole
                     continue;
                 }
             }
+        }
+        TcpClient ConnectToServer()
+        {
+            clientSocket = new TcpClient();
+            while (!clientSocket.Connected)
+            {
+                try
+                {
+                    clientSocket.Connect(serverAddress, PORT);
+                }
+                catch
+                {
+                    Thread.Sleep(500);
+                }
+            }
+            return clientSocket;
+
         }
         TcpClient clientSocket = new TcpClient();
         IPAddress serverAddress;
