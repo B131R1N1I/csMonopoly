@@ -65,7 +65,7 @@ namespace MonopolyClientConsole
             {
                 try
                 {
-                    
+
                     if (clientSocket.Connected & stream.DataAvailable)
                     {
                         System.Console.WriteLine("stream.DataAvailable == true");
@@ -89,10 +89,12 @@ namespace MonopolyClientConsole
                 }
                 catch (ObjectDisposedException ex)
                 {
-                    System.Console.WriteLine("!!!!!!" + ex.Message);
+                    System.Console.WriteLine($"!!!!!!{ex.Message}");
                     Console.Beep();
                     continue;
                 }
+                if (json.Count > 0)
+                    Console.WriteLine($"------{json.Dequeue().from}");
             }
         }
         TcpClient ConnectToServer()

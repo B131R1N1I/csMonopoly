@@ -13,10 +13,11 @@ namespace MonopolyClientConsole
     {
         static void Main()
         {
-            Queue<ActionJsonObject> json = new Queue<ActionJsonObject>();
+            Queue<ActionJsonObject> jsonRecived = new Queue<ActionJsonObject>();
+
             IPAddress serverAddress = IPAddress.Loopback;
             Connection serverConnection = new Connection(serverAddress);
-            Thread dataReader = new Thread(() => serverConnection.DataReader(ref json));
+            Thread dataReader = new Thread(() => serverConnection.DataReader(ref jsonRecived));
             dataReader.Start();
 
 
@@ -44,14 +45,14 @@ namespace MonopolyClientConsole
                     else if (howManytemp == "")
                         break;
                 }
-                json.Enqueue(new ActionJsonObject() { type = type, from = from, to = to, howMany = howMany });
+                serverConnection.JsonSender(new ActionJsonObject() { type = type, from = from, to = to, howMany = howMany });
                 
-                // temporary
-                Thread.Sleep(1000);
-                if (json.Count > 0)
-                    // error message
-                    Console.WriteLine(json.Peek().from);
-                    serverConnection.JsonSender(json.Dequeue());
+                // // temporary
+                // Thread.Sleep(1000);
+                // if (json.Count > 0)
+                //     // error message
+                //     Console.WriteLine(json.Peek().from);
+                //     serverConnection.JsonSender(json.Dequeue());
                     
 
             }
