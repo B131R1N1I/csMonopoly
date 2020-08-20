@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MonopolyApp
 {
-    class User
+    public class User
     {
         User(string name)
         {
@@ -60,6 +60,13 @@ namespace MonopolyApp
             }
             throw new ArgumentException($"There is no user {username}.");
         }
+        public static User GetUser(List<User> listOfUsers, int id)
+        {
+
+            if (listOfUsers.Find(u => u.id == id) != null)
+                return listOfUsers.Find(u => u.id == id);
+            throw new ArgumentException($"There is no user with id: {id}.");
+        }
         public static User CreateNewUser(List<User> listOfUsers, string username)
         {
             if (listOfUsers.Find(user => user.name.ToLower() == username.ToLower()) != null)
@@ -67,13 +74,16 @@ namespace MonopolyApp
 
             return new User(username);
         }
-        public readonly string name;
+        public string name
+        {
+            get;
+        }
         public float balance
         {
             get;
             private set;
         }
-        public readonly int id;
+        public int id{get;}
         static private int idcreator = 0;
     }
 }

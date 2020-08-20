@@ -7,14 +7,14 @@ namespace MonopolyApp
         public static string ActionMessage(ActionJsonObject json)
         {
             string toDo = json.type;
-            string from = json.from;
-            string to = json.to;
+            int from = json.from;
+            int to = json.to;
             double howMany = Math.Round(json.howMany, 2);
 
                 switch (toDo)
                 {
                     case "newPlayer":
-                        return $"Player {from} has been added.";
+                        return $"Player {json.message} has been added.";
 
                     case "dontAllowMorePlayers":
                         return $"Now no one can join to this game. {from} has blocked it. " +

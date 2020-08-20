@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Net;
-using System.Text.Json;
+// using System.Text.Json;
 using System.Threading;
+using Newtonsoft.Json;
 
 namespace MonopolyApp
 {
@@ -51,13 +52,13 @@ namespace MonopolyApp
                     System.Console.WriteLine(data);
                     try
                     {
-                        json.Enqueue(new StreamWithAction(JsonSerializer.Deserialize<ActionJsonObject>(data), stream));
+                        json.Enqueue(new StreamWithAction(JsonConvert.DeserializeObject<ActionJsonObject>(data), stream));
                     }
                     catch (JsonException e)
                     {
                         if (CannotDeserializeDataEvent != null)
                             CannotDeserializeDataEvent(stream, e);
-                    }                
+                    }
                 }
                 //         try
                 //         {
@@ -80,13 +81,42 @@ namespace MonopolyApp
         }
         public static void DataSender(NetworkStream stream, ActionJsonObject json)
         {
-            Byte[] bytes = new byte[256];
-            bytes = System.Text.Encoding.ASCII.GetBytes(JsonSerializer.Serialize<ActionJsonObject>(json));
+            if (stream == null)
+                DataSender(listOfStreams.ToArray(), json);
+            //Byte[] bytes = new byte[256];
+            SendObject sendObject = new SendObject() { type = "operation", actionJsonObject = json };
+            Byte[] bytes = System.Text.Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(sendObject));
 
-            stream.Write(bytes, 0, bytes.Length);
+            if (stream != null)
+            {
+                System.Console.WriteLine("WRITE");
+                stream.Write(bytes, 0, bytes.Length);
 
-            System.Console.WriteLine($"Send {bytes.Length}");
+                System.Console.WriteLine($"Send {bytes.Length}");
+            }
 
+        }
+        public static void DataSender(NetworkStream[] streams, ActionJsonObject json)
+        {
+            foreach (NetworkStream stream in streams)
+                DataSender(stream, json);
+        }
+        public static void BalanceSender(User[] listOfUsers)
+        {
+            Byte[] bytes = System.Text.Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(new SendObject() 
+            { type = "users", listOfUsers = JsonConvert.SerializeObject(listOfUsers)}));
+            System.Console.WriteLine(JsonConvert.SerializeObject(new SendObject() 
+            { type = "users", listOfUsers = JsonConvert.SerializeObject(listOfUsers)}));
+            foreach (User item in listOfUsers)
+            {
+                System.Console.WriteLine(item);
+            }
+            foreach (NetworkStream stream in listOfStreams.ToArray())
+            {
+                stream.Write(bytes, 0, bytes.Length);
+                
+                System.Console.WriteLine($"Sent {bytes.Length}");
+            }
         }
         // public static void DataSender(ActionJsonObject json)
         // {

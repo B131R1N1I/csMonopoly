@@ -23,8 +23,9 @@ namespace MonopolyApp
             NetworkStream sender = streamWithAction.stream;
             float howMany = (float)Math.Round(operation.howMany, 2);
             string toDo = operation.type;
-            string from = operation.from;
-            string to = operation.to;
+            int from = operation.from;
+            int to = operation.to;
+            string message = operation.message;
             User user1, user2;
             try
             {
@@ -34,12 +35,12 @@ namespace MonopolyApp
                     case "newPlayer":
                         if (allowMorePlayers)
                         {
-                            if (from.Length < 3)
-                                throw new ArgumentException($"Username \"{from}\" is too short.");
+                            if (message.Length < 3)
+                                throw new ArgumentException($"Username \"{message}\" is too short.");
 
-                            listOfUsers.Add(User.CreateNewUser(listOfUsers, from));
+                            listOfUsers.Add(User.CreateNewUser(listOfUsers, message));
                             if (UserCreatedEvent != null)
-                                UserCreatedEvent(new TypeEventArgs(operation, sender));
+                                UserCreatedEvent(new TypeEventArgs(operation));
                         }
                         else
                             throw new ArgumentException($"{from} cannot join");
@@ -55,7 +56,7 @@ namespace MonopolyApp
                             {
                                 allowMorePlayers = false;
                                 if (NoMorePlayersAllowedEvent != null)
-                                    NoMorePlayersAllowedEvent(new TypeEventArgs(operation, sender));
+                                    NoMorePlayersAllowedEvent(new TypeEventArgs(operation));
                             }
                             else
                                 throw new Exception("You need at least 2 players to start game");
@@ -75,7 +76,7 @@ namespace MonopolyApp
                             user1.PayToOtherPlayer(user2, howMany);
 
                             if (PaidToOtherPlayerEvent != null)
-                                PaidToOtherPlayerEvent(new TypeEventArgs(operation, sender));
+                                PaidToOtherPlayerEvent(new TypeEventArgs(operation));
 
                         }
                         catch (ArgumentException)
@@ -96,7 +97,7 @@ namespace MonopolyApp
                             user1.PayFromTheBalance(howMany);
 
                             if (PaidFromTheBalanceEvent != null)
-                                PaidFromTheBalanceEvent(new TypeEventArgs(operation, sender));
+                                PaidFromTheBalanceEvent(new TypeEventArgs(operation));
 
                         }
                         catch (ArgumentException)
@@ -115,7 +116,7 @@ namespace MonopolyApp
                         user1.AddMoney(howMany);
 
                         if (AddedMoneyEvent != null)
-                            AddedMoneyEvent(new TypeEventArgs(operation, sender));
+                            AddedMoneyEvent(new TypeEventArgs(operation));
 
                         break;
 
@@ -137,7 +138,7 @@ namespace MonopolyApp
                         user1.PassedStart();
 
                         if (PassedStartEvent != null)
-                            PassedStartEvent(new TypeEventArgs(operation, sender));
+                            PassedStartEvent(new TypeEventArgs(operation));
 
                         break;
 
@@ -157,6 +158,7 @@ namespace MonopolyApp
 
                         break;
                 }
+                
             }
             catch (Exception ex)
             {
@@ -164,6 +166,8 @@ namespace MonopolyApp
                     ExceptionEvent(sender, ex);
             throw;
             }
+            System.Console.WriteLine("Balance sender:");
+            Connection.BalanceSender(listOfUsers.ToArray());
         }
     }
 }
